@@ -1,0 +1,28 @@
+{
+  "name": "galaxy",
+  "version": "1.0.0",
+  "author": "youngdze",
+  "license": "MIT",
+  "scripts": {
+    "prewebpack": "rimraf build",
+    "webpack": "webpack --colors --progress",
+    "preserve": "rimraf build",
+    "serve": "webpack-dev-server --colors --progress --port 8081 --inline --hot"
+  },
+  "devDependencies": {
+    "babel-core": "^6.22.1",
+    "babel-loader": "^6.2.10",
+    "babel-preset-es2015": "^6.22.0",
+    "css-loader": "^0.26.1",
+    "eslint": "^3.15.0",
+    "node-sass": "^4.5.0",
+    "rimraf": "^2.5.4",
+    "sass-loader": "^5.0.1",
+    "style-loader": "^0.13.1",
+    "ts-loader": "^2.0.0",
+    "tslint": "^4.4.2",
+    "typescript": "^2.1.6",
+    "webpack": "^2.2.1",
+    "webpack-dev-server": "^2.3.0"
+  }
+}
