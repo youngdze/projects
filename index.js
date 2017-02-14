@@ -1,1 +1,1 @@
-module.exports = require('./src/Galaxy').default;
+module.exports = require('./src/Project').default;
