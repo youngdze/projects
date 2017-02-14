@@ -1,4 +1,20 @@
 const path = require('path');
+const webpack = require('webpack');
+
+const ENV = process.env.NODE_ENV;
+
+let plugins = [];
+if (ENV === 'production') {
+  plugins.push(
+    new webpack.optimize.UglifyJsPlugin({
+      compress: {
+        drop_console: true,
+        warnings: false
+      }
+    })
+  );
+}
+
 
 module.exports = {
   context: __dirname,
@@ -32,5 +48,6 @@ module.exports = {
         use: ['style-loader', 'css-loader', 'sass-loader']
       }
     ]
-  }
+  },
+  plugins
 };

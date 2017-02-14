@@ -7,7 +7,8 @@
     "prewebpack": "rimraf build",
     "webpack": "webpack --colors --progress",
     "preserve": "rimraf build",
-    "serve": "webpack-dev-server --colors --progress --port 8081 --inline --hot"
+    "serve": "webpack-dev-server --colors --progress --port 8081 --inline --hot",
+    "build": "NODE_ENV=production npm run webpack"
   },
   "devDependencies": {
     "babel-core": "^6.22.1",
