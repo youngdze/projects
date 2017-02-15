@@ -11,6 +11,10 @@ class Point {
     border: Border;
     source: Point;
     target: Point;
+    movable: boolean = true;
+    defaultStyle: string = 'rgba(0, 0, 0, .3)';
+    fillStyle: string = this.defaultStyle;
+    pressedStyle: string = 'rgba(0, 0, 0, .6)';
 
     constructor(x: number, y: number, context: CanvasRenderingContext2D, border?: Border) {
         this.x = x;
@@ -23,21 +27,33 @@ class Point {
         this.border = border;
     }
 
-    move(): Point {
-        let {x, y, radius, moveAngle, movePerSec, border} = this;
+    set pressed(pressed: boolean) {
+        this.fillStyle = pressed ? this.pressedStyle : this.defaultStyle;
+    }
 
-        if (border) {
-            if (x - radius <= 0 || x + radius >= border.width) {
-                moveAngle = this.moveAngle = moveAngle - Math.PI / 2;
-            } else if (y - radius <= 0 || y + radius >= border.height) {
-                moveAngle = this.moveAngle = Math.PI - moveAngle;
+    move(): Point {
+        let {x, y, radius, moveAngle, movePerSec, border, movable} = this;
+
+        if (movable) {
+            if (border) {
+                if (x - radius <= 0 || x + radius >= border.width) {
+                    moveAngle = this.moveAngle = moveAngle - Math.PI / 2;
+                } else if (y - radius <= 0 || y + radius >= border.height) {
+                    moveAngle = this.moveAngle = Math.PI - moveAngle;
+                }
             }
+
+            this.x += movePerSec * Math.sin(moveAngle);
+            this.y -= movePerSec * Math.cos(moveAngle);
         }
 
-        this.x += movePerSec * Math.sin(moveAngle);
-        this.y -= movePerSec * Math.cos(moveAngle);
-
         this.render();
+
+        return this;
+    }
+
+    toggleMove(toggle: boolean): Point {
+        this.movable = toggle;
 
         return this;
     }
@@ -63,11 +79,11 @@ class Point {
     }
 
     render(): Point {
-        const {x, y, context} = this;
+        const {x, y, context, fillStyle} = this;
 
         context.save();
         context.beginPath();
-        context.fillStyle = `rgba(0, 0, 0, .3)`;
+        context.fillStyle = fillStyle;
         context.arc(x, y, this.radius, 0, Math.PI * 2);
         context.fill();
         context.restore();

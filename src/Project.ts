@@ -1,5 +1,6 @@
 import './style.scss';
 import Point from './Point';
+import Coor from './Coor';
 
 class Project {
     canvas: HTMLCanvasElement;
@@ -21,7 +22,70 @@ class Project {
         this.ctx.fillRect(0, 0, this.width, this.height);
         this.ctx.save();
 
-        this.autoReSize();
+        this.autoReSize()
+            .pointDraggable();
+    }
+
+    pointDraggable():Project {
+        let {canvas, points} = this;
+        let point: Point;
+
+        canvas.addEventListener('mousedown', (ev) => {
+            let coor: Coor = this.getCoorFromEvent(ev);
+
+            point = points.filter(p => {
+                return ((p.x + p.radius) >= coor.x) &&
+                    ((p.x - p.radius) <= coor.x) &&
+                    ((p.y + p.radius) >= coor.y) &&
+                    ((p.y - p.radius) <= coor.y);
+            })[0];
+            if (point) {
+                point.pressed = true;
+                point.toggleMove(false);
+            }
+        });
+
+        canvas.addEventListener('mousemove', (ev) => {
+            if (point) {
+                let coor: Coor = this.getCoorFromEvent(ev);
+
+                // point.moveAngle = Math.atan((coor.x - point.x) / (coor.y - point.y));
+                point.x = coor.x;
+                point.y = coor.y;
+                point.render();
+            }
+        });
+
+        canvas.addEventListener('mouseup', (ev) => {
+            if (point) {
+                point.pressed = false;
+                point.toggleMove(true);
+                point = null;
+            }
+        });
+
+        return this;
+    }
+
+    private getCoorFromEvent(event: MouseEvent): Coor {
+        let coor: Coor;
+
+        if (event.pageX || event.pageY) {
+            coor = {
+                x: event.pageX,
+                y: event.pageY
+            };
+        } else {
+            let x = event.clientX + document.body.scrollLeft + document.documentElement.scrollLeft,
+                y = event.clientY + document.body.scrollTop+ document.documentElement.scrollTop;
+
+            x -= canvas.offsetLeft;
+            y -= canvas.offsetTop;
+
+            coor = { x, y };
+        }
+
+        return coor;
     }
 
     get randomCoor(): {x: number, y: number} {
@@ -107,7 +171,7 @@ class Project {
 
 const canvas = <HTMLCanvasElement>document.querySelector('#project');
 let project = new Project(canvas);
-project.renderPoints(80).connectPoints();
+project.renderPoints(50).connectPoints();
 
 let move$: number;
 let move = (): number => {
